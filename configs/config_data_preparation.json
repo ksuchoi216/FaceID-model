@@ -1,0 +1,11 @@
+{
+  "data_source": "./data/",
+  "folder_to_save":"./data/photos_2m/",
+  "frame_count_limit":300,
+  "frame_interval_for_sampling": 60,
+  "data":{
+    "path_folder_for_saved_images": "./data/photos_2m/",
+    "path_folder_for_saving_cropped_faces": "./data/photos_cropped/",
+    "image_size": 500
+  }
+}

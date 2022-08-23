@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/kc/prog/face-feature-extraction'
+make: Leaving directory `/Users/kc/prog/face-feature-extraction'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
