@@ -1,4 +1,4 @@
-from external_lib import MTCNN, InceptionResnetV1
+from external_library import MTCNN, InceptionResnetV1
 from torchsummary import summary
 import torch
 

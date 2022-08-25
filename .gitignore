@@ -3,6 +3,5 @@ __pycache__/
 *.py[cod]
 *.pyc
 
-/external_lib/
-/ref_code/
+/external_library/
 /data/

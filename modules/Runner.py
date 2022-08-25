@@ -39,9 +39,8 @@ def runner(model, phases, criterion, optimizer, scheduler, dataloaders, dataset_
               with torch.set_grad_enabled(phase == 'train'):
                   outputs = model(inputs)
                   values, preds = torch.max(outputs, 1)
-                  if i == 1:
-                    #   print(f'outputs:{outputs}')
-                      print(f'after max: {values}, {preds}')
+                #   if i == 1:
+                    #   print(f'after max: {values}, {preds}')
                   loss = criterion(outputs, labels)
 
                   # backward + optimize only if in training phase

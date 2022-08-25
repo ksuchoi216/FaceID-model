@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from tqdm import tqdm
 
-from external_lib import MTCNN
+from external_library import MTCNN
 
 # from PIL import Image
 import matplotlib.pyplot as plt
