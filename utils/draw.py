@@ -37,8 +37,10 @@ def imshow_denormalization(img, show_img = False):
 
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+import seaborn as sns
 
-def show_pca(numpy_data_x, numpy_data_y):
+def show_pca(numpy_data_x, numpy_data_y, label_list = None):
+  
   train_x = numpy_data_x
   train_y = numpy_data_y
   
@@ -52,7 +54,10 @@ def show_pca(numpy_data_x, numpy_data_y):
 
   pca_x=pca.transform(standarized_x)
   fig = plt.figure(1, figsize=(20, 10))
-  plt.scatter(pca_x[:,0],pca_x[:,1],c=train_y)
-  plt.axis('off')
+  
+  plot = plt.scatter(pca_x[:,0],pca_x[:,1],c=train_y)
+  # plt.axis('off')
+  plt.legend(handles = plot.legend_elements()[0], labels = label_list)
+  plt.grid()
   plt.show()
 

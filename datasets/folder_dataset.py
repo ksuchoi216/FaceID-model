@@ -64,3 +64,4 @@ class Folder_Dataset():
     dataset_sizes = {'train': train_size, 'val': val_size, 'test': test_size}
 
     return dataloaders, dataset_sizes, self.idx_to_class
+  

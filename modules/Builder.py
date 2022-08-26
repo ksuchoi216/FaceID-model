@@ -36,6 +36,14 @@ class Builder():
     
   def getModel(self):
     return self.face_feature_extractor
+  
+  def loadModel(self, path_for_saved_model, device, classify = False):
+    self.face_feature_extractor.load_state_dict(torch.load(path_for_saved_model, map_location= torch.device(device)))
+    self.face_feature_extractor.classify = classify
+    self.face_feature_extractor.to(device)
+    self.face_feature_extractor.eval()
+    
+    return self.face_feature_extractor
 
   def summary(self, size):
     summary(self.face_feature_extractor, size)
