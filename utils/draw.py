@@ -60,4 +60,8 @@ def show_pca(numpy_data_x, numpy_data_y, label_list = None):
   plt.legend(handles = plot.legend_elements()[0], labels = label_list)
   plt.grid()
   plt.show()
+  
+  
+def plot_graph(numpy_data):
+  
 

@@ -2,10 +2,15 @@
   "data_source": "./data/",
   "folder_to_save":"./data/photos_2m/",
   "frame_count_limit":300,
-  "frame_interval_for_sampling": 30,
-  "data":{
+  "frame_interval_for_sampling": 15,
+  "user_names" : ["jhyoo", "jhoh", "jhongyoo", "kschoi"],
+  "video_names" : ["1", "2", "3", "4"],
+  "data_preparation":{
     "path_folder_for_saved_images": "./data/photos_2m/",
     "path_folder_for_saving_cropped_faces": "./data/photos_cropped/",
-    "image_size": 500
+    "image_size": 240,
+    "filter_with_face_prob": true,
+    "face_prob_threshold_for_filter": 0.90
+
   }
 }

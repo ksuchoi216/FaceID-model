@@ -33,6 +33,9 @@ class DataPreparation():
     if not os.path.exists(self.path_folder_for_saving_cropped_faces):
       os.makedirs(self.path_folder_for_saving_cropped_faces)
       print('new folder was created in ', self.path_folder_for_saving_cropped_faces)
+      
+    self.filter_with_face_prob = cfg['filter_with_face_prob']
+    self.face_prob_threshold_for_filter = cfg['face_prob_threshold_for_filter']
 
   def save_cropped_faces(self):
     print("Starting data load...")
@@ -55,8 +58,6 @@ class DataPreparation():
     img_num = 0
     current_idx = 0
     for i, (img, idx) in enumerate(data_loader):
-      
-      
       if current_idx != idx:
         current_idx += 1
         img_num = 0
@@ -77,8 +78,14 @@ class DataPreparation():
       file_name = str(img_num) + '.png'
       save_path = self.path_folder_for_saving_cropped_faces + name+"/"+file_name
 
-      face = self.mtcnn_show(img, save_path=save_path)
-      print('saved cropped face image in ',save_path)
+      if self.filter_with_face_prob is True:
+        face, prob = self.mtcnn(img, return_prob=True)
+        if face is not None and prob >= self.face_prob_threshold_for_filter:
+          _ = self.mtcnn_show(img, save_path=save_path)    
+          print('saved cropped face image in ',save_path)
+      else:
+        _ = self.mtcnn_show(img, save_path=save_path)
+        print('saved cropped face image in ',save_path)
       # face = face.permute(1,2,0).int().numpy()
       # plt.imshow(face)
       # plt.axis("off")

@@ -1,6 +1,8 @@
 from external_library import MTCNN, InceptionResnetV1
 from torchsummary import summary
 import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 class Builder():
   def __init__(self, cfg):
@@ -45,9 +47,40 @@ class Builder():
     
     return self.face_feature_extractor
 
-  def summary(self, size):
-    summary(self.face_feature_extractor, size)
+  def summary(self):
+    # summary(self.face_feature_extractor, size)
+    print(self.face_feature_extractor)
   
-
-
+class Net(nn.Module):
+  def __init__(self):
+    super(Net, self).__init__(cfg)
+    self.input_size = cfg['input_size']
+    self.hidden_layer_ratio = cfg['hidden_layer_ratio']
+    self.num_classes = cfg['num_classes']
     
+    self.fc1 = nn.Lineear(self.input_size, self.input_size*self.hidden_layer_ratio)
+    self.fc2 = nn.Linear(self.input_size*self.hidden_layer_ratio, self.input_size)
+    self.fc3 = nn.Linear(self.input_size, self.num_classes)
+    
+  def forward(self, x):
+    x = F.relu(self.fc1(x))
+    x = F.relu(self.fc2(x))
+    x = F.sigmoid(self.fc3(x))
+    return x
+
+
+class Builder_Seperated_Model():
+  def __init__(self, cfg):
+    self.pretrained = cfg["pretrained"]
+    self.num_classes = cfg["num_classes"]
+    self.classify = cfg["classify"] 
+    self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print(f'device is {self.device}')
+
+    self.face_feature_extractor = InceptionResnetV1(pretrained=self.pretrained, num_classes=self.num_classes, classify=self.classify, device=self.device) 
+  
+    print('Loading model was just completed.')
+
+  def summary(self):
+    # summary(self.face_feature_extractor, size)
+    print(self.face_feature_extractor)
