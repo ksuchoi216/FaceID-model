@@ -14,7 +14,12 @@
     "pretrained": "vggface2",
     "num_classes" : 4,
     "classify" : true,
-    "image_size" : 250
+    "image_size" : 250,
+    "Net" : {
+      "input_size": 512,
+      "hidden_layer_ratio" : 2,
+      "num_classes": 4
+    }
   },
   "embedding":{
     "data_path": "./data/photos_cropped/",
