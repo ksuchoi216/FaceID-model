@@ -58,10 +58,9 @@ def show_pca(numpy_data_x, numpy_data_y, label_list = None):
   plot = plt.scatter(pca_x[:,0],pca_x[:,1],c=train_y)
   # plt.axis('off')
   plt.legend(handles = plot.legend_elements()[0], labels = label_list)
-  plt.grid()
+  plt.grid(True)
   plt.show()
   
-  
-def plot_graph(numpy_data):
+
   
 

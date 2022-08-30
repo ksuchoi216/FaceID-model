@@ -16,7 +16,6 @@ class Builder():
     # self.multi_faces_detector = MTCNN(image_size=240, margin=0, keep_all=True, min_face_size=40) # keep_all=True
     self.face_feature_extractor = InceptionResnetV1(pretrained=self.pretrained, num_classes=self.num_classes, classify=self.classify, device=self.device) 
 
-    
     #Transfer Learning
     for param in self.face_feature_extractor.parameters():
       param.requires_grad = False
@@ -25,8 +24,7 @@ class Builder():
     for param in self.face_feature_extractor.logits.parameters():
       param.requires_grad = True
       # print(f'{param.requires_grad}')
-    
-  
+      
     print('Loading model was just completed.')
 
   def setModel(self, pretrained, num_classes, classify):
@@ -51,23 +49,30 @@ class Builder():
     # summary(self.face_feature_extractor, size)
     print(self.face_feature_extractor)
   
-class Net(nn.Module):
-  def __init__(self):
-    super(Net, self).__init__(cfg)
+
+class Classifier(nn.Module):
+  def __init__(self, cfg, face_feature_extractor):
+    super(Classifier, self).__init__()
+    
+    self.face_feature_extractor = face_feature_extractor
+    for param in self.face_feature_extractor.parameters():
+      param.requires_grad = False
+    
+    
     self.input_size = cfg['input_size']
     self.hidden_layer_ratio = cfg['hidden_layer_ratio']
     self.num_classes = cfg['num_classes']
     
-    self.fc1 = nn.Lineear(self.input_size, self.input_size*self.hidden_layer_ratio)
+    self.fc1 = nn.Linear(self.input_size, self.input_size*self.hidden_layer_ratio)
     self.fc2 = nn.Linear(self.input_size*self.hidden_layer_ratio, self.input_size)
     self.fc3 = nn.Linear(self.input_size, self.num_classes)
     
   def forward(self, x):
+    x = self.face_feature_extractor(x)
     x = F.relu(self.fc1(x))
     x = F.relu(self.fc2(x))
     x = F.sigmoid(self.fc3(x))
     return x
-
 
 class Builder_Seperated_Model():
   def __init__(self, cfg):
@@ -77,10 +82,16 @@ class Builder_Seperated_Model():
     self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f'device is {self.device}')
 
-    self.face_feature_extractor = InceptionResnetV1(pretrained=self.pretrained, num_classes=self.num_classes, classify=self.classify, device=self.device) 
-  
+    face_feature_extractor = InceptionResnetV1(pretrained=self.pretrained, num_classes=self.num_classes, classify=self.classify, device=self.device)
+    
+
+    self.classifier = Classifier(cfg['classifier'], face_feature_extractor=face_feature_extractor).to(self.device)
+
     print('Loading model was just completed.')
+    
+  def getModel(self):
+    return self.classifier
 
   def summary(self):
     # summary(self.face_feature_extractor, size)
-    print(self.face_feature_extractor)
+    print(self.classifier)

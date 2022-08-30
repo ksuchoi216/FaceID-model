@@ -42,13 +42,16 @@ def runner(model, phases, criterion, optimizer, scheduler, dataloaders, dataset_
     best_acc = 0.0
 
     for epoch in range(num_epochs):
-        print('-' * 50)
         print(f'Epoch {epoch}/{num_epochs - 1}')
 
         preds_list = []
         labels_list = []
-        train_evaluation_matrix = torch.empty((num_epochs, 4)).to(device)
-        val_evaluation_matrix = torch.empty((num_epochs, 4)).to(device)
+        
+        if 'train' in phases:
+            train_evaluation_matrix = torch.empty((num_epochs, 4)).to(device)
+            
+        if 'val' in phases:
+            val_evaluation_matrix = torch.empty((num_epochs, 4)).to(device)
 
         # Each epoch has a training and validation phase
         for phase in phases:
@@ -62,9 +65,9 @@ def runner(model, phases, criterion, optimizer, scheduler, dataloaders, dataset_
 
             
             # Iterate over data.
-            for i, (inputs, labels) in enumerate(dataloaders[phase]):
+            for i, (images, labels) in enumerate(dataloaders[phase]):
 
-                inputs = inputs.to(device)
+                images = images.to(device)
                 labels = labels.to(device)
 
                 # zero the parameter gradients
@@ -73,7 +76,7 @@ def runner(model, phases, criterion, optimizer, scheduler, dataloaders, dataset_
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs = model(inputs)
+                    outputs = model(images)
                     values, preds = torch.max(outputs, 1)
                 #   if i == 1:
                     #   print(f'after max: {values}, {preds}')
@@ -85,7 +88,7 @@ def runner(model, phases, criterion, optimizer, scheduler, dataloaders, dataset_
                         optimizer.step()
 
                 # statistics
-                running_loss += loss.item() * inputs.size(0)
+                running_loss += loss.item() * images.size(0)
                 running_corrects += torch.sum(preds == labels.data)
                 preds_list = preds_list + preds.tolist()
                 labels_list = labels_list + labels.data.tolist()
@@ -119,7 +122,7 @@ def runner(model, phases, criterion, optimizer, scheduler, dataloaders, dataset_
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
                 
-        print('-' * 50)
+        print('-' * 100)
         
 
 
@@ -145,19 +148,19 @@ def visualize_model(model, dataloaders, phase='val', num_images=6):
     fig = plt.figure()
 
     with torch.no_grad():
-        for i, (inputs, labels) in enumerate(dataloaders[phase]):
-            inputs = inputs.to(device)
+        for i, (images, labels) in enumerate(dataloaders[phase]):
+            images = images.to(device)
             labels = labels.to(device)
 
-            outputs = model(inputs)
+            outputs = model(images)
             _, preds = torch.max(outputs, 1)
 
-            for j in range(inputs.size()[0]):
+            for j in range(images.size()[0]):
                 images_so_far += 1
                 ax = plt.subplot(num_images//2, 2, images_so_far)
                 ax.axis('off')
                 # ax.set_title(f'predicted: {class_names[preds[j]]}')
-                plt.imshow(inputs.cpu().data[j])
+                plt.imshow(images.cpu().data[j])
 
                 if images_so_far == num_images:
                     model.train(mode=was_training)
