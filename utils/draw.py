@@ -64,12 +64,9 @@ def show_pca(numpy_data_x, numpy_data_y, label_list = None):
   plt.grid(True)
   plt.show()
 
-def show_pca_with_prediction(numpy_x_pred, numpy_x_emb, numpy_y_true, label_list = None):
-  
-  x_pred = numpy_x_pred
-  x_emb = numpy_x_emb
-  y_true = numpy_y_true
-  
+import pandas as pd
+
+def show_pca_with_prediction(x_emb, y_true, y_pred):
   #standarize features
   scaler=StandardScaler()
   scaler.fit(x_emb)
@@ -80,12 +77,18 @@ def show_pca_with_prediction(numpy_x_pred, numpy_x_emb, numpy_y_true, label_list
 
   pca_x=pca.transform(standarized_x)
   fig = plt.figure(1, figsize=(20, 10))
-  # plot = plt.scatter(pca_x[:,0],pca_x[:,1],c=train_y)
-  plt.plot()
+  x1 = pca_x[:, 0]
+  x2 = pca_x[:, 1]
   
+  correction = np.where(y_true == y_pred, 1, 0)
+  
+  df = pd.DataFrame(data=[x1, x2, y_true, y_pred, correction], columns=["pca1", "pca2", "y_true", "y_pred", "correction" ]).T
+
+  # sns.scatterplot(data = df, x=)  
+  # plt.scatter(x1, x2, color='red', marker="x")
   
   # plt.axis('off')
-  plt.legend(handles = plot.legend_elements()[0], labels = label_list)
+  # plt.legend(handles = plot.legend_elements()[0], labels = label_list)
   plt.grid(True)
   plt.show()
   
