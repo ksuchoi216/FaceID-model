@@ -56,6 +56,34 @@ def show_pca(numpy_data_x, numpy_data_y, label_list = None):
   fig = plt.figure(1, figsize=(20, 10))
   
   plot = plt.scatter(pca_x[:,0],pca_x[:,1],c=train_y)
+  plt.plot()
+  
+  
+  # plt.axis('off')
+  plt.legend(handles = plot.legend_elements()[0], labels = label_list)
+  plt.grid(True)
+  plt.show()
+
+def show_pca_with_prediction(numpy_x_pred, numpy_x_emb, numpy_y_true, label_list = None):
+  
+  x_pred = numpy_x_pred
+  x_emb = numpy_x_emb
+  y_true = numpy_y_true
+  
+  #standarize features
+  scaler=StandardScaler()
+  scaler.fit(x_emb)
+  standarized_x=scaler.transform(x_emb)
+
+  pca = PCA(n_components=2)
+  pca.fit(standarized_x)
+
+  pca_x=pca.transform(standarized_x)
+  fig = plt.figure(1, figsize=(20, 10))
+  # plot = plt.scatter(pca_x[:,0],pca_x[:,1],c=train_y)
+  plt.plot()
+  
+  
   # plt.axis('off')
   plt.legend(handles = plot.legend_elements()[0], labels = label_list)
   plt.grid(True)
