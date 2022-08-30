@@ -34,12 +34,14 @@ class Builder():
 
     self.face_feature_extractor = InceptionResnetV1(pretrained=self.pretrained, num_classes=self.num_classes, classify=self.classify, device=self.device) 
     
-  def getModel(self):
-    return self.face_feature_extractor
+  def getModel(self, device=None):
+    if device is None:
+      device = self.device
+    
+    return self.face_feature_extractor.to(device)
   
-  def loadModel(self, path_for_saved_model, device, classify = False):
+  def loadModel(self, path_for_saved_model, device):
     self.face_feature_extractor.load_state_dict(torch.load(path_for_saved_model, map_location= torch.device(device)))
-    self.face_feature_extractor.classify = classify
     self.face_feature_extractor.to(device)
     self.face_feature_extractor.eval()
     
