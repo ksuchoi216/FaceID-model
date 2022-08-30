@@ -45,6 +45,7 @@ class Builder():
     
     return self.face_feature_extractor
 
+
   def summary(self):
     # summary(self.face_feature_extractor, size)
     print(self.face_feature_extractor)
