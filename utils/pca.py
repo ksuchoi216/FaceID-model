@@ -2,27 +2,20 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 import pandas as pd
-def execute_pca(df, column = None):
-  if column is None:
-    return print(f'There is no designated column to be passed to pca')
-  
+def execute_pca(numpy_data):
   scaler=StandardScaler()
-  scaler.fit(x_emb)
-  standarized_x=scaler.transform(x_emb)
+  scaler.fit(numpy_data)
+  standarized_data=scaler.transform(numpy_data)
 
   pca = PCA(n_components=2)
-  pca.fit(standarized_x)
+  pca.fit(standarized_data)
 
-  pca_x=pca.transform(standarized_x)
+  pca_x=pca.transform(standarized_data)
   # fig = plt.figure(1, figsize=(20, 10))
   pca_x1 = pca_x[:, 0]
   pca_x2 = pca_x[:, 1]
-  
+
   return pca_x1, pca_x2
-  
-  
-  
-  
 
 
 def show_pca(numpy_data_x, numpy_data_y, label_list = None):

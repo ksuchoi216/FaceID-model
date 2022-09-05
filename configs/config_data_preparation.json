@@ -1,6 +1,6 @@
 {
   "data_source": "./data/",
-  "folder_to_save":"./data/photos_2m/",
+  "folder_to_save":"./data/photos_from_video/",
   "frame_count_limit":300,
   "frame_interval_for_sampling": 15,
   "user_names" : ["jhyoo", "jhoh", "jhongyoo", "kschoi"],
