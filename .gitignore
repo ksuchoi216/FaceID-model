@@ -129,6 +129,4 @@ dmypy.json
 .pyre/
 
 /external_library/facenet_pytorch/
-/data/video/
-/data/photos_cropped/
-/data/photos_from_video/
+/data/
