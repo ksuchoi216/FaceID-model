@@ -1,4 +1,5 @@
 {
   "data_source": "./data/",
-  "user_names" : ["jhyoo", "jhoh", "jhongyoo", "kschoi"]
+  "user_names" : ["jhyoo", "jhoh", "jhongyoo", "kschoi"],
+  "theNumberOfImages" : 230
 }
