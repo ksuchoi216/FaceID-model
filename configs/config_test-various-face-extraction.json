@@ -1,5 +1,7 @@
 {
   "data_source": "./data/",
   "user_names" : ["jhyoo", "jhoh", "jhongyoo", "kschoi"],
-  "theNumberOfImages" : 230
+  "theNumberOfImages" : 230,
+  "save_folder_for_embedding_numpy": "./data/embedding_numpy/",
+  "models" : ["VGG-Face", "Facenet", "Facenet512", "OpenFace", "DeepFace", "DeepID", "ArcFace"]
 }
