@@ -1,17 +1,30 @@
-import json, os, sys
-
-def load_config(filename):
-  path_for_config = './configs/'+filename
-  with open(path_for_config) as f:
-    cfg = json.load(f)
-  
-  return cfg
+import json
+import os
+import sys
 
 
-def path_add_to_sys_path(path_to_be_add):
-  # path_to_be_add = '/notebook/personal/ksuchoi216/face-id-model/'
-  if not path_to_be_add in sys.path:
-    sys.path.insert(0, path_to_be_add)
-    os.chdir(path_to_be_add)
+class Config_Manager:
+    def __init__(self):
+        self.cfg_path = None
 
-  print(f'sys.path: {sys.path}')
+    def set_cfg_path(self, cfg_path):
+        self.cfg_path = cfg_path
+
+    def get_cfg(self):
+        with open(self.cfg_path) as f:
+            self.cfg = json.load(f)
+        return self.cfg
+
+    def print(self):
+        print(self.cfg)
+
+
+def checkLocalServer(isLocalServer, sys_path_to_be_added=None):
+    if isLocalServer is True:
+        if sys_path_to_be_added not in sys.path:
+            sys.path.insert(0, sys_path_to_be_added)
+            os.chdir(sys_path_to_be_added)
+
+        print("System path as follows:")
+        for path in sys.path:
+            print(f"    {path}")

@@ -11,7 +11,7 @@
     "folder_for_saving_cropped_faces": "./data/photos_cropped/",
     "image_size": 240,
     "filter_with_face_prob": true,
-    "face_prob_threshold_for_filter": 0.90
+    "face_prob_threshold_for_filter": 0
 
   }
 }
