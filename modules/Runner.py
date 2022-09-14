@@ -3,6 +3,7 @@ import time
 
 import matplotlib.pyplot as plt
 import torch
+import torch.nn.functional as F
 
 
 def macro_evaluation(preds_list, labels_list):
@@ -43,7 +44,8 @@ def runner(
     scheduler,
     dataloaders,
     dataset_sizes,
-    num_epochs=1,
+    threshold=0,
+    num_epochs=1
 ):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -66,6 +68,7 @@ def runner(
 
         # Each epoch has a training and validation phase
         for phase in phases:
+            print(f'[phase]:{phase}')
             if phase == "train":
                 model.train()  # Set model to training mode
             else:
@@ -73,6 +76,7 @@ def runner(
 
             running_loss = 0.0
             running_corrects = 0
+            running_prob = 0.0
 
             # Iterate over data.
             for i, (images, labels) in enumerate(dataloaders[phase]):
@@ -88,8 +92,10 @@ def runner(
                 with torch.set_grad_enabled(phase == "train"):
                     outputs = model(images)
                     values, preds = torch.max(outputs, 1)
-                    #   if i == 1:
-                    #   print(f'after max: {values}, {preds}')
+                    values = F.sigmoid(values)
+                    # print(values)
+                    prob = torch.sum(values)
+                    # print(prob)
                     loss = criterion(outputs, labels)
 
                     # backward + optimize only if in training phase
@@ -98,6 +104,8 @@ def runner(
                         optimizer.step()
 
                 # statistics
+                running_prob += prob
+                # print('running_prob', running_prob)
                 running_loss += loss.item() * images.size(0)
                 running_corrects += torch.sum(preds == labels.data)
                 preds_list = preds_list + preds.tolist()
@@ -107,6 +115,7 @@ def runner(
                 scheduler.step()
 
             # evaluation calculation
+            epoch_prob = running_prob / dataset_sizes[phase]
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
 
@@ -114,9 +123,12 @@ def runner(
                                                              labels_list)
 
             # evaluation print
-            print(
-                f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f} recall: {epoch_recall:.4f} Precision: {epoch_precision:.4f}"
+            msg = (
+                f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f} "
+                f"recall: {epoch_recall:.4f} Precision: {epoch_precision:.4f} "
+                f'avg_prob: {epoch_prob:.4f}'
             )
+            print(msg)
 
             # save evaluation results
             if phase == "train":
@@ -136,7 +148,6 @@ def runner(
                 best_model_wts = copy.deepcopy(model.state_dict())
 
         print("-" * 100)
-
     time_elapsed = time.time() - since
     print(f'Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')
     print(f"Best val Acc: {best_acc:4f}")
@@ -148,6 +159,7 @@ def runner(
         return model, train_evaluation_matrix, val_evaluation_matrix
     else:
         print("there is no return value becasue of test mode")
+        return epoch_prob
 
 
 def visualize_model(model, dataloaders, phase="val", num_images=6):
