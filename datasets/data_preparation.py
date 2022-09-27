@@ -26,9 +26,9 @@ warnings.filterwarnings("ignore")
 
 
 class DataPreparation:
-    def __init__(self, cfg):
+    def __init__(self, cfg, threshold=0.0):
         self.folder_for_saved_images = cfg["folder_for_saved_images"]
-        self.folder_for_saving_cropped_faces = cfg["folder_for_saving_cropped_faces"]
+        self.folder_for_cropped_faces = cfg["folder_for_cropped_faces"]
         self.image_size = cfg["image_size"]
 
         self.mtcnn = MTCNN(
@@ -39,12 +39,18 @@ class DataPreparation:
         )  # keep_all=False
         self.mtcnn_show = MTCNN(select_largest=False, post_process=False)
 
-        if not os.path.exists(self.folder_for_saving_cropped_faces):
-            os.makedirs(self.folder_for_saving_cropped_faces)
-            print("new folder was created in ", self.folder_for_saving_cropped_faces)
+        if not os.path.exists(self.folder_for_cropped_faces):
+            os.makedirs(self.folder_for_cropped_faces)
+            print("new folder was created in ", self.folder_for_cropped_faces)
 
         self.filter_with_face_prob = cfg["filter_with_face_prob"]
-        self.face_prob_threshold_for_filter = cfg["face_prob_threshold_for_filter"]
+        self.face_prob_threshold = threshold
+
+        self.folder_for_threshold = self.folder_for_cropped_faces
+        self.folder_for_threshold += 'th0' + str(int(threshold*100)) + '/'
+        if not os.path.exists(self.folder_for_threshold):
+            os.makedirs(self.folder_for_threshold)
+            print("new folder was created in ", self.folder_for_threshold)
 
     def save_cropped_faces(self):
         print("Starting data load...")
@@ -57,7 +63,7 @@ class DataPreparation:
 
         for i, name in idx_to_class.items():
             print(i, name)
-            path_ = self.folder_for_saving_cropped_faces + name + "/"
+            path_ = self.folder_for_cropped_faces + name + "/"
             if not os.path.exists(path_):
                 os.makedirs(path_)
 
@@ -74,7 +80,6 @@ class DataPreparation:
             if current_idx != idx:
                 current_idx += 1
                 img_num = 0
-            img_num += 1
 
             if i % 30 == 0 and show_image is True:
                 print("=" * 50)
@@ -88,13 +93,16 @@ class DataPreparation:
 
             name = idx_to_class[idx]
             file_name = str(img_num) + ".png"
-            save_path = self.folder_for_saving_cropped_faces + name + "/" + file_name
+            save_path = self.folder_for_threshold
+            save_path += name + "/" + file_name
 
             if self.filter_with_face_prob is True:
                 face, prob = self.mtcnn(img, return_prob=True)
-                if face is not None and prob >= self.face_prob_threshold_for_filter:
+                if face is not None and prob >= self.face_prob_threshold:
                     _ = self.mtcnn_show(img, save_path=save_path)
                     print("saved cropped face image in ", save_path)
             else:
                 _ = self.mtcnn_show(img, save_path=save_path)
                 print("saved cropped face image in ", save_path)
+
+            img_num += 1

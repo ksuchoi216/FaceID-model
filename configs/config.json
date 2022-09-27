@@ -1,0 +1,21 @@
+{
+    "DataPreparation":{
+      "IsSavePhoto": false,
+      "IsSaveFace": false,
+      "source_path": "./source/",
+      "folder_name_for_video": "/video_220908/",
+      "folder_to_save_photos":"./source/photos_from_video/",
+      "user_names" : ["jhyoo", "jhoh", "jhongyoo", "kschoi"],
+      "video_names" : ["1", "2", "3", "4"],
+      "video_extension" : ".mp4",
+      "frame_count_limit":100,
+      "frame_interval_for_sampling": 25
+    },
+
+    "data_preparation":{
+      "folder_for_saved_images": "./data/photos_from_video/",
+      "folder_for_cropped_faces": "./data/photos_cropped/",
+      "image_size": 240,
+      "filter_with_face_prob": true
+    }
+}

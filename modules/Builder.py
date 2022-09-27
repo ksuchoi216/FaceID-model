@@ -5,6 +5,7 @@ import torch.nn.functional as F
 
 from external_library import InceptionResnetV1
 
+
 # TODO: to use inheritance for various models
 class Builder:
     def __init__(self, cfg):
@@ -63,6 +64,7 @@ class Builder:
         print(self.face_feature_extractor)
 
 
+'''
 class Builder:
     def __init__(self, cfg):
         self.pretrained = cfg["pretrained"]
@@ -171,3 +173,4 @@ class Builder_Seperated_Model:
     def summary(self):
         # summary(self.face_feature_extractor, size)
         print(self.classifier)
+'''

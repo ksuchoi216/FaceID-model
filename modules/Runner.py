@@ -4,6 +4,7 @@ import time
 import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
+from external_library import MTCNN
 
 
 def macro_evaluation(preds_list, labels_list):
@@ -37,6 +38,7 @@ def macro_evaluation(preds_list, labels_list):
 
 
 def runner(
+    cfg,
     model,
     phases,
     criterion,
@@ -44,7 +46,6 @@ def runner(
     scheduler,
     dataloaders,
     dataset_sizes,
-    threshold=0,
     num_epochs=1
 ):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -80,7 +81,6 @@ def runner(
 
             # Iterate over data.
             for i, (images, labels) in enumerate(dataloaders[phase]):
-
                 images = images.to(device)
                 labels = labels.to(device)
 

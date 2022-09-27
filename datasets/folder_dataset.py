@@ -157,6 +157,7 @@ class Folder_Dataset():
 
         self.idx_to_class = {i: c for c, i
                              in self.image_dataset.class_to_idx.items()}
+
         for i, name in self.idx_to_class.items():
             print(i, name)
 
@@ -165,7 +166,7 @@ class Folder_Dataset():
     def setIsSplit(self, isSplit):
         self.isSplit = isSplit
 
-    def getDataset(self):
+    def getImageDataset(self):
         return self.image_dataset
 
     def createDataLoaders(self):
