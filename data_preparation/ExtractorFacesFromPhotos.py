@@ -2,33 +2,27 @@
 import os
 import warnings
 
-# import sys
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
-
-# import torch
-# import torchvision
 from torchvision import datasets
 
 from external_library import MTCNN
-
-# from numpy import save
-
-
-# from torchvision.utils import save_image
-
-
-# from PIL import Image
-# from tqdm import tqdm
 
 
 warnings.filterwarnings("ignore")
 
 
-class DataPreparation:
-    def __init__(self, cfg, threshold=0.0):
-        self.folder_for_saved_images = cfg["folder_for_saved_images"]
-        self.folder_for_cropped_faces = cfg["folder_for_cropped_faces"]
+class ExtractorFacesFromPhotos(object):
+    def __init__(self, cfg, threshold=0.5):
+        folder_name_for_source = cfg['folder_name_for_source']
+        self.path_for_photos = os.path.join(
+            folder_name_for_source,
+            cfg["folder_name_for_photos"]
+        )
+        self.path_for_faces = os.path.join(
+            folder_name_for_source,
+            cfg["folder_name_to_save_faces"]
+        )
         self.image_size = cfg["image_size"]
 
         self.mtcnn = MTCNN(
@@ -39,23 +33,17 @@ class DataPreparation:
         )  # keep_all=False
         self.mtcnn_show = MTCNN(select_largest=False, post_process=False)
 
-        if not os.path.exists(self.folder_for_cropped_faces):
-            os.makedirs(self.folder_for_cropped_faces)
-            print("new folder was created in ", self.folder_for_cropped_faces)
+        if not os.path.exists(self.path_for_faces):
+            os.makedirs(self.path_for_faces)
+            print("new folder was created in ", self.path_for_faces)
 
         self.filter_with_face_prob = cfg["filter_with_face_prob"]
         self.face_prob_threshold = threshold
 
-        self.folder_for_threshold = self.folder_for_cropped_faces
-        self.folder_for_threshold += 'th0' + str(int(threshold*100)) + '/'
-        if not os.path.exists(self.folder_for_threshold):
-            os.makedirs(self.folder_for_threshold)
-            print("new folder was created in ", self.folder_for_threshold)
-
     def save_cropped_faces(self):
         print("Starting data load...")
         show_image = False
-        image_dataset = datasets.ImageFolder(self.folder_for_saved_images)
+        image_dataset = datasets.ImageFolder(self.path_for_photos)
 
         idx_to_class = {
             i: c for c, i in image_dataset.class_to_idx.items()
@@ -63,7 +51,10 @@ class DataPreparation:
 
         for i, name in idx_to_class.items():
             print(i, name)
-            path_ = self.folder_for_cropped_faces + name + "/"
+            path_ = os.path.join(
+                self.path_for_faces,
+                name
+            )   
             if not os.path.exists(path_):
                 os.makedirs(path_)
 
@@ -93,8 +84,11 @@ class DataPreparation:
 
             name = idx_to_class[idx]
             file_name = str(img_num) + ".png"
-            save_path = self.folder_for_threshold
-            save_path += name + "/" + file_name
+            save_path = os.path.join(
+                self.path_for_faces,
+                name,
+                file_name
+            )
 
             if self.filter_with_face_prob is True:
                 face, prob = self.mtcnn(img, return_prob=True)
