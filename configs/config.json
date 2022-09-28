@@ -22,9 +22,12 @@
 
   "DatasetBasedOnFolders":{
     "folder_name_for_images": "faces_from_photos",
-    "image_rotation_angle": 10, 
     "image_size": 240,
+    "image_rotation_angle": 10,
     "pretrained": "vggface2",
-    "file_name_to_save_numpy": "face_data"
+    "file_name_to_save_numpy": "face_data",
+    "DatasetFromNumpy":{
+      "file_name_to_save_dataloader": "dataloader"
+    }
   }
 }
